@@ -20,12 +20,12 @@
     'use strict';
 
     {
-      const Todo = () => {
+      const Todo = (props) => {
         return (
           <li>
             <label>
               <input type="checkbox" />
-              <span>aaa</span>
+              <span>{props.todo.title}</span>
             </label>
             <button>Del</button>
           </li>
@@ -38,6 +38,16 @@
           { id: 1, title: 'bbb', isCompleted: true },
           { id: 2, title: 'ccc', isCompleted: false },
         ];
+
+        //Todoコンポーネントの配列を作成
+        const todoItems = todos.map((todo)=>{
+          return(
+            <Todo 
+            key={todo.id}
+            todo={todo}/> // Todoコンポーネントにtodo属性として、引数todoを渡す
+          )
+        });
+
         return (
           <>
             <h1>
@@ -45,9 +55,7 @@
               <button id="purge">Purge</button>
             </h1>
             <ul id="todos">
-              <Todo />
-              <Todo />
-              <Todo />
+             {todoItems}
             </ul>
             <form id="add-form">
               <input type="text" />
