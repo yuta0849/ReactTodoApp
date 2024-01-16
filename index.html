@@ -28,7 +28,7 @@
         return (
           <li>
             <label>
-              <input type="checkbox" />
+              <input type="checkbox" checked={props.todo.isCompleted} />
               <span>{props.todo.title}</span>
             </label>
             <button onClick={handleDeleteClick}>Del</button>
@@ -43,6 +43,17 @@
           { id: 1, title: 'bbb', isCompleted: true },
           { id: 2, title: 'ccc', isCompleted: false },
         ]);
+
+        const handleTodoCheckboxChange = (id) => { //ここの仮引数idの意味がイマイチわからず
+          const newTodos = todos.map((todo) => {
+            return { //配列の要素となるオブジェクトを返す必要がある
+              id: todo.id,
+              title: todo.title,
+              isCompleted: todo.id === id ? !todo.isCompleted : todo.isCompleted
+            };
+            
+          })
+        }
 
         const handleTodoDeleteClick = (id) => {
           if (!confirm('Sure?')) {
@@ -61,7 +72,7 @@
             <Todo
               key={todo.id}
               todo={todo} // Todoコンポーネントにtodo属性として、引数todoを渡す
-              onDeleteClick={handleTodoDeleteClick} />  //関数も渡せる
+              onDeleteClick={handleTodoDeleteClick} />  //Delボタン押下時の処理を書いた関数を渡す
           )
         });
 
