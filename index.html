@@ -37,13 +37,34 @@
                 type="checkbox"
                 checked={props.todo.isCompleted}
                 onChange={handleCheckboxChange}
-                />
+              />
               <span>{props.todo.title}</span>
             </label>
             <button onClick={handleDeleteClick}>Del</button>
           </li>
         );
       };
+
+
+      const AdForm = () => {
+        const [title, setTitle] = React.useState(''); //初期値は空文字
+
+        const handleTextChange = (e) =>{ //仮引数eを渡す
+          setTitle(e.currentTarget.value); //e.currentTarget.valueにて現在input内のvalueを参照、titleにset
+        };
+
+        return (
+          <form>
+            <input
+              type="text"
+              value={title} 
+              onChange={handleTextChange}/>
+            <button>Add</button>
+          </form>
+        );
+      };
+
+
 
       const App = () => {
         //[配列, 配列を操作するための命令]
@@ -59,7 +80,7 @@
               id: todo.id,
               title: todo.title,
               isCompleted: todo.id === id ? !todo.isCompleted : todo.isCompleted,
-            };  
+            };
           });
           // 新しい配列をsetTodosに渡す = todosが更新される
           setTodos(newTodos);
@@ -83,7 +104,7 @@
               key={todo.id}
               todo={todo} // Todoコンポーネントにtodo属性として、引数todoを渡す
               onDeleteClick={handleTodoDeleteClick} //Delボタン押下時の処理を書いた関数を渡す
-              onCheckboxChange={handleTodoCheckboxChange} />  
+              onCheckboxChange={handleTodoCheckboxChange} />
           );
         });
 
@@ -94,13 +115,10 @@
               Todos
               <button id="purge">Purge</button>
             </h1>
-            <ul id="todos"> 
+            <ul id="todos">
               {todoItems} {/*こちらでtodosのオブジェクトの数だけTodoコンポーネントを呼び出し、li要素を作成*/}
             </ul>
-            <form id="add-form">
-              <input type="text" />
-              <button>Add</button>
-            </form>
+            <AdForm />
           </>
         );
       }
