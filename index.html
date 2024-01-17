@@ -59,7 +59,7 @@
           props.onSubmit(title);
           setTitle('');
           // .currentを忘れずに(https://zenn.dev/luvmini511/articles/744bd38b14cfa1)
-          inputRef.current.focus(); 
+          inputRef.current.focus();
         }
 
         return (
@@ -69,7 +69,7 @@
               value={title}
               onChange={handleTextChange}
               ref={inputRef} //定数inputRefをref属性に埋め込む
-              />
+            />
             <button>Add</button>
           </form>
         );
@@ -84,6 +84,20 @@
           { id: 1, title: 'bbb', isCompleted: true },
           { id: 2, title: 'ccc', isCompleted: false },
         ]);
+
+        const handlePurgeClick = () => {
+          if (!confirm('sure?')) {
+              return;
+            }
+          //checkが入っているtodoを削除してtodoの描画をし直す
+          const newTodos = todos.filter((todo) => {
+            return todo.isCompleted === false;
+          })
+          setTodos(newTodos);
+        }
+
+        // setLocalStorage('key',JSON.stringify('value'));
+        // getLocalStorage(JSON.parse('key'));
 
         //formに入力後、addボタンを押した際の処理
         const handleAddFormSubmit = (title) => { //AdFormコンポーネントでtitleという引数にてinputのvalueを受け取る
@@ -138,13 +152,13 @@
           <>
             <h1>
               Todos
-              <button id="purge">Purge</button>
+              <button onClick={handlePurgeClick}>Purge</button>
             </h1>
             <ul id="todos">
               {todoItems} {/*こちらでtodosのオブジェクトの数だけTodoコンポーネントを呼び出し、li要素を作成*/}
             </ul>
-            <AdForm 
-            onSubmit = {handleAddFormSubmit}
+            <AdForm
+              onSubmit={handleAddFormSubmit}
             />
           </>
         );
