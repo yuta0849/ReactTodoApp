@@ -79,25 +79,33 @@
 
       const App = () => {
         //[配列, 配列を操作するための命令]
-        const [todos, setTodos] = React.useState([
-          { id: 0, title: 'aaa', isCompleted: false },
-          { id: 1, title: 'bbb', isCompleted: true },
-          { id: 2, title: 'ccc', isCompleted: false },
-        ]);
+        const [todos, setTodos] = React.useState([]);//useStateで管理している値が変化するたびに画面が再描画される
+
+        //指定したタイミングで処理を実行、関数と配列を渡す、配列内の値が変更されたタイミングで関数が実行される
+        React.useEffect(() => {
+          let savedTodos;
+          if (localStorage.getItem('todos') === null) {
+            savedTodos = [];
+          } else {
+            savedTodos = setTodos(JSON.parse(localStorage.getItem('todos')));
+          }
+        }, []); //Appコンポーネント作成時にのみ実行されれば良いので、配列は空でOK
+
+        const updateTodos = (newTodos) => {
+          setTodos(newTodos);
+          localStorage.setItem('todos', JSON.stringify(newTodos));
+        }
 
         const handlePurgeClick = () => {
           if (!confirm('sure?')) {
-              return;
-            }
+            return;
+          }
           //checkが入っているtodoを削除してtodoの描画をし直す
           const newTodos = todos.filter((todo) => {
             return todo.isCompleted === false;
           })
-          setTodos(newTodos);
-        }
-
-        // setLocalStorage('key',JSON.stringify('value'));
-        // getLocalStorage(JSON.parse('key'));
+          updateTodos(newTodos);
+        };
 
         //formに入力後、addボタンを押した際の処理
         const handleAddFormSubmit = (title) => { //AdFormコンポーネントでtitleという引数にてinputのvalueを受け取る
@@ -108,7 +116,7 @@
             isCompleted: false,
           });
           // 新しい配列をsetTodosに渡す = todosが更新される
-          setTodos(newTodos);
+          updateTodos(newTodos);
         };
 
         //checkboxを付け外しした際の処理
@@ -121,7 +129,7 @@
             };
           });
           // 新しい配列をsetTodosに渡す = todosが更新される
-          setTodos(newTodos);
+          updateTodos(newTodos);
         };
 
         //Delボタンを押した際の処理
@@ -133,7 +141,7 @@
             return todo.id !== id;
           });
           // 新しい配列をsetTodosに渡す  = todosが更新される
-          setTodos(newTodos);
+          updateTodos(newTodos);
         };
 
         //Todoコンポーネントの配列を作成
