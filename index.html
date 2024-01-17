@@ -19,16 +19,25 @@
   <script type="text/babel">
     'use strict';
 
-    {
+    {//Todoコンポーネントはオブジェクトtodoの数だけtodoItemsにて呼び出され、li要素が作成される
       const Todo = (props) => {
         // Appコンポーネントと中身が同じでも別名で定義する
         const handleDeleteClick = () => {
-          props.onDeleteClick(props.todo.id);
+          props.onDeleteClick(props.todo.id); //引数としてidを渡す
         };
+
+        const handleCheckboxChange = () => {
+          props.onCheckboxChange(props.todo.id);
+        };
+
         return (
           <li>
             <label>
-              <input type="checkbox" checked={props.todo.isCompleted} />
+              <input
+                type="checkbox"
+                checked={props.todo.isCompleted}
+                onChange={handleCheckboxChange}
+                />
               <span>{props.todo.title}</span>
             </label>
             <button onClick={handleDeleteClick}>Del</button>
@@ -49,11 +58,12 @@
             return { //配列の要素となるオブジェクトを返す必要がある
               id: todo.id,
               title: todo.title,
-              isCompleted: todo.id === id ? !todo.isCompleted : todo.isCompleted
-            };
-            
-          })
-        }
+              isCompleted: todo.id === id ? !todo.isCompleted : todo.isCompleted,
+            };  
+          });
+          // 新しい配列をsetTodosに渡す = todosが更新される
+          setTodos(newTodos);
+        };
 
         const handleTodoDeleteClick = (id) => {
           if (!confirm('Sure?')) {
@@ -62,28 +72,30 @@
           const newTodos = todos.filter((todo) => {
             return todo.id !== id;
           });
-          // 新しい配列をsetTodosに渡す
+          // 新しい配列をsetTodosに渡す  = todosが更新される
           setTodos(newTodos);
         };
 
         //Todoコンポーネントの配列を作成
-        const todoItems = todos.map((todo) => {
+        const todoItems = todos.map((todo) => { // todoオブジェクトの数だけTodoコンポーネントに各プロパティを送る
           return (
             <Todo
               key={todo.id}
               todo={todo} // Todoコンポーネントにtodo属性として、引数todoを渡す
-              onDeleteClick={handleTodoDeleteClick} />  //Delボタン押下時の処理を書いた関数を渡す
-          )
+              onDeleteClick={handleTodoDeleteClick} //Delボタン押下時の処理を書いた関数を渡す
+              onCheckboxChange={handleTodoCheckboxChange} />  
+          );
         });
 
+        //Appコンポーネントが返すHTML、最も外枠
         return (
           <>
             <h1>
               Todos
               <button id="purge">Purge</button>
             </h1>
-            <ul id="todos">
-              {todoItems}
+            <ul id="todos"> 
+              {todoItems} {/*こちらでtodosのオブジェクトの数だけTodoコンポーネントを呼び出し、li要素を作成*/}
             </ul>
             <form id="add-form">
               <input type="text" />
