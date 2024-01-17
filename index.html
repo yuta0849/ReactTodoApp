@@ -46,19 +46,30 @@
       };
 
 
-      const AdForm = () => {
+      const AdForm = (props) => {
         const [title, setTitle] = React.useState(''); //初期値は空文字
+        const inputRef = React.useRef(null); //DOM要素を取得、初期値はnull
 
-        const handleTextChange = (e) =>{ //仮引数eを渡す
+        const handleTextChange = (e) => { //仮引数eを渡す
           setTitle(e.currentTarget.value); //e.currentTarget.valueにて現在input内のvalueを参照、titleにset
         };
 
+        const handleSubmit = (e) => {
+          e.preventDefault(); //form送信後にページ遷移しないように設定
+          props.onSubmit(title);
+          setTitle('');
+          // .currentを忘れずに(https://zenn.dev/luvmini511/articles/744bd38b14cfa1)
+          inputRef.current.focus(); 
+        }
+
         return (
-          <form>
+          <form onSubmit={handleSubmit}>
             <input
               type="text"
-              value={title} 
-              onChange={handleTextChange}/>
+              value={title}
+              onChange={handleTextChange}
+              ref={inputRef} //定数inputRefをref属性に埋め込む
+              />
             <button>Add</button>
           </form>
         );
@@ -74,6 +85,19 @@
           { id: 2, title: 'ccc', isCompleted: false },
         ]);
 
+        //formに入力後、addボタンを押した際の処理
+        const handleAddFormSubmit = (title) => { //AdFormコンポーネントでtitleという引数にてinputのvalueを受け取る
+          const newTodos = [...todos];
+          newTodos.push({
+            id: Date.now(), //UNIXタイムスタンプ
+            title: title,
+            isCompleted: false,
+          });
+          // 新しい配列をsetTodosに渡す = todosが更新される
+          setTodos(newTodos);
+        };
+
+        //checkboxを付け外しした際の処理
         const handleTodoCheckboxChange = (id) => { //ここの仮引数idの意味がイマイチわからず
           const newTodos = todos.map((todo) => {
             return { //配列の要素となるオブジェクトを返す必要がある
@@ -86,6 +110,7 @@
           setTodos(newTodos);
         };
 
+        //Delボタンを押した際の処理
         const handleTodoDeleteClick = (id) => {
           if (!confirm('Sure?')) {
             return;
@@ -118,7 +143,9 @@
             <ul id="todos">
               {todoItems} {/*こちらでtodosのオブジェクトの数だけTodoコンポーネントを呼び出し、li要素を作成*/}
             </ul>
-            <AdForm />
+            <AdForm 
+            onSubmit = {handleAddFormSubmit}
+            />
           </>
         );
       }
